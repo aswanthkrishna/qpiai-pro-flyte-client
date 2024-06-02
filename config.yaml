@@ -1,0 +1,22 @@
+admin:
+  # For GRPC endpoints you might want to use dns:///flyte.myexample.com
+  endpoint: dns:///flyte.local:80
+  authType: Pkce
+  insecure: true
+  # caCertFilePath: /home/ashwanthk/qpiai-pro-cluster-configs/sandbox-binary/flyte.crt
+console:
+  endpoint: https://flyte.local/console
+logger:
+  show-source: true
+  level: 6
+storage:
+  connection:
+    access-key: minio
+    auth-type: accesskey
+    disable-ssl: true
+    endpoint: http://minio.qpiaipro.local
+    region: us-east-1
+    secret-key: miniostorage
+  type: minio
+  container: "my-s3-bucket"
+  enable-multicontainer: true
