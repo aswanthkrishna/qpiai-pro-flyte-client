@@ -34,7 +34,7 @@ def auto_annotate(request: AutoAnnotateInputs) -> ExecutionInfo:
 
     task = remote.fetch_task(
             name="grounding_dino.auto_annotate",
-            version="Zbn_dOa46PXfX09tY_7zzg",
+            version="jjwsygsOCkpn3wJtegvLrA",
             project=PROJECT_NAME,
             domain=PROJECT_DOMAIN
         )

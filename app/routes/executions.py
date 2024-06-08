@@ -42,3 +42,19 @@ def get_executions() -> List[ExecutionInfo]:
     print(executions)
 
     return execution_infos
+
+
+@router.get("/execution_status/{name}")
+def get_executions(name: str) -> dict:
+    try:
+        execution = remote.fetch_execution(
+                PROJECT_NAME,
+                "development",
+                name=name
+            )
+        print(execution)
+        status = { "status": WorkflowExecutionPhase.enum_to_string(execution.closure.phase) }
+    except Exception:
+        return { "status": 'NOT FOUND' }
+    return status
+

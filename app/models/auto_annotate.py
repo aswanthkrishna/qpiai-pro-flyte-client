@@ -12,4 +12,6 @@ class AutoAnnotateInputs(BaseModel):
     branch: str = "main"
     view_name: Optional[str] = None
     user_id: Optional[str] = None
+    cvat_password: Optional[str] = None
+    cvat_user: Optional[str] = None
 
