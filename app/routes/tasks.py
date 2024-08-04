@@ -5,6 +5,7 @@ from fastapi import APIRouter
 
 from ..models.executions import ExecutionInfo
 from ..models.auto_annotate import AutoAnnotateInputs
+from ..models.train import TrainMMdetectionInputs
 
 
 from flytekit.remote import FlyteRemote
@@ -67,3 +68,39 @@ def auto_annotate(request: AutoAnnotateInputs) -> ExecutionInfo:
                         task=task
                      )
 
+@router.post("/train_mmdetection")
+def train_mmdetectoin(request: TrainMMdetectionInputs) -> ExecutionInfo:
+
+    task = remote.fetch_task(
+            name="mmdetection.train.train",
+            version="dqANIui9-BudpNp4yYFi9g",
+            project=PROJECT_NAME,
+            domain=PROJECT_DOMAIN
+        )
+    print(task)
+
+    execution_name = str(uuid.uuid4().hex)[:8]
+    s = execution_name[0] if execution_name[0].islower() else 'a'
+    execution_name = s + execution_name
+
+    if request.user_id: execution_name = request.user_id + "-" + execution_name
+    print(execution_name)
+
+    task_inputs = dict(request)
+    task_inputs["user_id"]
+    print(task_inputs)
+    execution = remote.execute(task, inputs=task_inputs, wait=False, project=PROJECT_NAME, domain=PROJECT_DOMAIN, execution_name=execution_name)
+    print(execution)
+    name = execution.id.name
+    status = WorkflowExecutionPhase.enum_to_string(execution.closure.phase)
+    time = int(execution.closure.duration.seconds)
+    start_time = execution.closure.started_at
+    task = execution.spec.launch_plan.name
+
+
+    return ExecutionInfo(id=name,
+                        status=status,
+                        time=time,
+                        start_time=start_time,
+                        task=task
+                     )
