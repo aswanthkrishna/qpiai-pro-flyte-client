@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qpiai-pro-flyte-client
+  namespace: flyte
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qpiai-pro-flyte-client
+  template:
+    metadata:
+      labels:
+        app: qpiai-pro-flyte-client
+    spec:
+      containers:
+      - name: qpiai-pro-flyte-client
+        image: aswanthkrshna/qpiai-pro-flyte-client:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            sed -e "s|\${AZURE_STORAGE_ACCOUNT}|$AZURE_STORAGE_ACCOUNT|g" \
+                -e "s|\${AZURE_STORAGE_KEY}|$AZURE_STORAGE_KEY|g" \
+                /tmp/config/config.yaml > /app/config.yaml
+            echo "Config file generated successfully"
+            cat /app/config.yaml
+            poetry run python main.py
+        env:
+        - name: PORT
+          value: "8001"
+        - name: AZURE_STORAGE_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              name: qpiai-pro-azure-storage-secret
+              key: account
+        - name: AZURE_STORAGE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: qpiai-pro-azure-storage-secret
+              key: key
+        volumeMounts:
+        - name: config-template
+          mountPath: /tmp/config
+      volumes:
+      - name: config-template
+        configMap:
+          name: qpiai-pro-azure-flyte-config

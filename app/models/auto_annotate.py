@@ -1,12 +1,12 @@
-
 from pydantic import BaseModel
 from typing import Dict, Optional
 
+
 class AutoAnnotateInputs(BaseModel):
-    class_dict : Dict[str, str]
+    class_dict: Dict[str, str]
     repo_path: str
     s3_access_key: str
-    s3_secret_key: str 
+    s3_secret_key: str
     s3_endpoint_url: str
     fiftyone_controller_endpoint: str
     branch: str = "main"
@@ -14,15 +14,15 @@ class AutoAnnotateInputs(BaseModel):
     user_id: Optional[str] = None
     cvat_password: Optional[str] = None
     cvat_user: Optional[str] = None
-    model_repo_path: str = None,
-    cvat_organization: Optional[str]="default"
+    model_repo_path: str = (None,)
+    cvat_organization: Optional[str] = "default"
 
 
 class CustomAutoAnnotateInputs(BaseModel):
-    class_dict : Dict[str, str]
+    class_dict: Dict[str, str]
     repo_path: str
     s3_access_key: str
-    s3_secret_key: str 
+    s3_secret_key: str
     s3_endpoint_url: str
     fiftyone_controller_endpoint: str
     branch: str = "main"
@@ -30,10 +30,5 @@ class CustomAutoAnnotateInputs(BaseModel):
     user_id: Optional[str] = None
     cvat_password: Optional[str] = None
     cvat_user: Optional[str] = None
-    model_repo_path: str = None,
-    cvat_organization: Optional[str]="default"
-
-
-
-
-
+    model_repo_path: str = (None,)
+    cvat_organization: Optional[str] = "default"

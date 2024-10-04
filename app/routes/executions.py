@@ -8,37 +8,40 @@ from flytekit.remote import FlyteRemote
 from flytekit.configuration import Config
 from flytekit.models.core.execution import WorkflowExecutionPhase
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 router = APIRouter()
 
 PROJECT_NAME = "flytesnacks"
+PROJECT_DOMAIN = "development"
 
-remote = FlyteRemote(Config.auto(config_file='config.yaml'))
+remote = FlyteRemote(Config.auto(config_file=os.getenv("CONFIG_FILE", "config.yaml")))
+
 
 @router.get("/executions")
 def get_executions() -> List[ExecutionInfo]:
-
     executions, _ = remote.client.list_executions_paginated(
-            PROJECT_NAME,
-            "development",
-        )
-    
+        PROJECT_NAME,
+        "development",
+    )
+
     execution_infos = []
 
-    for execution in executions : 
-            
+    for execution in executions:
         name = execution.id.name
         status = WorkflowExecutionPhase.enum_to_string(execution.closure.phase)
         time = int(execution.closure.duration.seconds)
         start_time = execution.closure.started_at
         task = execution.spec.launch_plan.name
 
-        execution_infos.append(ExecutionInfo(
-                                    id=name,
-                                    status=status,
-                                    time=time,
-                                    start_time=start_time,
-                                    task=task
-                                ))
+        execution_infos.append(
+            ExecutionInfo(
+                id=name, status=status, time=time, start_time=start_time, task=task
+            )
+        )
     print(executions)
 
     return execution_infos
@@ -47,14 +50,11 @@ def get_executions() -> List[ExecutionInfo]:
 @router.get("/execution_status/{name}")
 def get_executions(name: str) -> dict:
     try:
-        execution = remote.fetch_execution(
-                PROJECT_NAME,
-                "development",
-                name=name
-            )
+        execution = remote.fetch_execution(PROJECT_NAME, "development", name=name)
         print(execution)
-        status = { "status": WorkflowExecutionPhase.enum_to_string(execution.closure.phase) }
+        status = {
+            "status": WorkflowExecutionPhase.enum_to_string(execution.closure.phase)
+        }
     except Exception:
-        return { "status": 'NOT FOUND' }
+        return {"status": "NOT FOUND"}
     return status
-

@@ -1,5 +1,5 @@
-
 from pydantic import BaseModel, HttpUrl
+
 
 class DatasetHealthCheckInputs(BaseModel):
     callback_url: str
@@ -10,4 +10,4 @@ class DatasetHealthCheckInputs(BaseModel):
     action: str
     s3_access_key: str
     user_id: str
-    action: str = 'callback'
+    action: str = "callback"

@@ -12,6 +12,9 @@ app = FastAPI()
 app.include_router(executions.router)
 app.include_router(tasks.router)
 
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8080))
